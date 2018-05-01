@@ -1,0 +1,105 @@
+# The 'id' should be a string that uniquely identifies your template
+id: 'times-treemap-template'
+name: Times Treemap Template
+author: The Times
+autoheight: auto
+
+# This template is compatible with SDK version 2
+sdk_version: 2
+
+build:
+  # Defines the build processes used to build your template from source.
+  # You can have any number of build processes, and changes to the relevant
+  # files will trigger the appropriate build. Here we define build scripts
+  # for JavaScript and CSS.
+
+  src:
+    script: npm run build
+    # You can specify a whole directory, or individual files, or both.
+    # A change inside the directory or to any of the listed files will
+    # trigger a rebuild and reload.
+    directory: src
+    files:
+      - rollup.config.js
+
+  less:
+    script: npm run less
+    directory: less
+
+settings:
+  # Creates a settings panel that enables the end user to set the default state for
+  # individual visualisations made with this template.
+  #
+  # Available types:
+  # • "number" >> gives a number input. Optionally add "min:", "max:", and "step:" properties.
+  # • "string" >> gives an text input
+  # • "text" >> gives a textarea
+  # • "boolean" >> gives a checkbox
+  # • "color" >> gives a color picker
+
+  - Design # Headings can be used to break up the settings into collapsible sections
+  - property: colors # Refers to a property in the template's state object
+    name: Colors # Display name for the settings panel
+    description: A comma-separated list of colors # Optional description for the settings panel
+    type: string # See available types above
+  - property: value_prefix # Refers to a property in the template's state object
+    name: Prefix # Display name for the settings panel
+    type: string # See available types above
+    width: quarter
+  - property: value_suffix # Refers to a property in the template's state object
+    name: Suffix # Display name for the settings panel
+    type: string # See available types above
+    width: quarter
+  - property: fluid_width # Refers to a property in the template's state object
+    name: Use 100% width # Display name for the settings panel
+    type: boolean # See available types above
+  - property: margin_top
+    name: Top
+    type: number
+    min: 0
+    width: quarter
+    new_section: Margins
+  - property: margin_right
+    name: Right
+    type: number
+    min: 0
+    width: quarter
+  - property: margin_bottom
+    name: Bottom
+    type: number
+    min: 0
+    width: quarter
+  - property: margin_left
+    name: Left
+    type: number
+    min: 0
+    width: quarter
+  - property: margin_mobileRight
+    name: Right (mobile)
+    type: number
+    min: 0
+    width: quarter
+  - property: margin_mobileBottom
+    name: Bottom (mobile)
+    type: number
+    min: 0
+    width: quarter
+
+data:
+  - dataset: data
+    key: nest
+    name: Nesting
+    description: Select the columns you want to use to nest the data.
+    type: columns
+    columns: Data::D,A
+  - dataset: data
+    key: size
+    name: Size by
+    type: column
+    column: Data::B
+    optional: true
+  - dataset: data
+    key: info
+    name: Info
+    type: columns
+    columns: Data::C
