@@ -1,5 +1,5 @@
 import { selection } from "d3-selection";
-import { height, svg, state } from "./index";
+import { height, svg, state, isMobile } from "./index";
 import { legendConfig } from "./legend";
 
 import tspans from 'd3-jetpack/src/tspans';
@@ -32,6 +32,9 @@ const appendPlayerInfo = data => {
 const updateInfoBox = () => {
 	playerInfoTitle.translate([legendConfig.x + state.margin_left, height * 0.3 + titlemargin]);
 	playerInfo.translate([legendConfig.x + state.margin_left, height * 0.3 + titlemargin + 30]);
+
+  playerInfoTitle.style("opacity", isMobile ? 0 : 1);
+  playerInfo.style("opacity", isMobile ? 0 : 1);
 }
 
 const makeInfoBox = () => {

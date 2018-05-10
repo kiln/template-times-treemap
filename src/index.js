@@ -161,7 +161,8 @@ export function update() {
         else return state.value_prefix + d.data.value.size + state.value_suffix;
       }
     });
-
+    console.log(svg.node().getBoundingClientRect().height)
+    Flourish.setHeight(svg.node().getBoundingClientRect().height);
 }
 
 export function draw() {
