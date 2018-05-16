@@ -9,10 +9,13 @@ import translateSelection from 'd3-jetpack/src/translate-selection';
 selection.prototype.tspans = tspans;
 selection.prototype.translate = translateSelection;
 
-let titlemargin = 30;
+let titlemargin = 10;
+let playerInfoEmpty;
 let playerInfoTitle, playerInfo;
 
 const appendPlayerInfo = data => {
+  playerInfoEmpty = false;
+  updateInfoBox();
   playerInfoTitle.select("text").html('');
   playerInfo.select("text").html('');
 
@@ -24,20 +27,20 @@ const appendPlayerInfo = data => {
     .select('text')
     .at({ y: -25 })
     .tspans(() => {
-      return wordwrap(data.data.key + " " + (data.data.value ? data.data.value.info.join(" ") : ""), 15);
+      return wordwrap(data.data.key + " " + (data.data.value ? data.data.value.info.join(" ") : ""), isMobile ? Math.min(60, window.innerWidth / 8) : 15);
     })
     .attr('dy', (d, i) => i + 15);
 }
 
 const updateInfoBox = () => {
-	playerInfoTitle.translate([legendConfig.x + state.margin_left, height * 0.3 + titlemargin]);
-	playerInfo.translate([legendConfig.x + state.margin_left, height * 0.3 + titlemargin + 30]);
+  var infoBoxY = isMobile ? state.margin_top : legendConfig.totalHeight + legendConfig.y + state.margin_top + titlemargin;
 
-  playerInfoTitle.style("opacity", isMobile ? 0 : 1);
-  playerInfo.style("opacity", isMobile ? 0 : 1);
+	playerInfoTitle.translate([legendConfig.x + state.margin_left, infoBoxY ]);
+	playerInfo.translate([legendConfig.x + state.margin_left, infoBoxY + (playerInfoEmpty ? 0 : 40)]);
 }
 
 const makeInfoBox = () => {
+  playerInfoEmpty = true;
   playerInfoTitle = svg
     .append('g')
     .attr('class', 'playerInfoTitle');

@@ -7,24 +7,29 @@ import { container, isMobile, width, height, config, state, color, keys as key_v
 selection.prototype.translate = translateSelection;
 selection.prototype.st = st;
 
-let legendConfig;
+let legendConfig = {
+  height: 20
+};
 let legendTitle, legendContainer;
 let lineWidth, lineHeight;
 
-const updateLegend = () => {
-  legendConfig = {
-    x: isMobile ? state.margin_left : width + state.margin_left,
-    y: isMobile ? height : 5,
-    height: 20,
-  };
+const getLegendHeight = () => {
+  legendConfig.totalHeight = !isMobile || key_values.length < 3 ? (key_values.length * legendConfig.height) + 30 : (3 * legendConfig.height) + 30;
+}
 
-  lineWidth = config.width < 400 ? width - 20 : 100;
-  lineHeight = config.width < 400 ? 90 : 110;
+const updateLegend = () => {
+  legendConfig.x = isMobile ? 5 : width + state.margin_left;
+  legendConfig.y = isMobile ? height : 5;
+
+  getLegendHeight();
+
+  lineWidth = isMobile ? width - 10 : state.margin_right - 20;
+  lineHeight = legendConfig.totalHeight; 
 
   legendTitle.attr('transform', (d, i) => {
       const height = 20;
       const x = legendConfig.x;
-      const y = i * height + legendConfig.y;
+      const y = legendConfig.y;
       return 'translate(' + x + ',' + y + ')';
     });
   legendTitle.select("line.top").at({
@@ -35,7 +40,7 @@ const updateLegend = () => {
     x2: lineWidth,
     y1: lineHeight,
     y2: lineHeight
-  })
+  });
 
   let keys = legendContainer
     .selectAll("g")
@@ -44,11 +49,6 @@ const updateLegend = () => {
   let keys_enter = keys.enter()
     .append("g")
     .at({ class: "legend" })
-    .attr('transform', (d, i) => {
-      const x = state.margin_left + legendConfig.x;
-      const y = i * legendConfig.height + legendConfig.y + state.margin_top;
-      return 'translate(' + x + ',' + y + ')';
-    });
 
   keys_enter.append("rect")
     .at({
@@ -60,17 +60,19 @@ const updateLegend = () => {
   keys_enter.append("text")
     .at({
       x: 20,
-      y: 40,
+      y: 25,
     })
     .st({ color: '#666', fill: '#666' })
 
   let keys_update = keys.merge(keys_enter);
 
   keys_update.attr('transform', (d, i) => {
-    const leftmargin = 0;
-    const topmargin = 0;
+    const col = Math.floor(i / 3);
+    const row = i - (col * 3);
+    const leftmargin = isMobile ? col * 120 : 0;
+    const topmargin = isMobile ? row * legendConfig.height : i * legendConfig.height;
     const x = leftmargin + legendConfig.x;
-    const y = i * legendConfig.height + legendConfig.y + topmargin;
+    const y = legendConfig.y + topmargin;
     return 'translate(' + x + ',' + y + ')';
   });
 
@@ -95,7 +97,7 @@ const makeLegend = () => {
 
   legendTitle
     .append('text')
-    .at({ x: 0, y: 20 })
+    .at({ x: 0, y: 5 })
     .text('Key');
 
   legendTitle.append('line').at({
@@ -118,4 +120,4 @@ const makeLegend = () => {
   });
 };
 
-export { makeLegend, updateLegend, legendConfig }
+export { makeLegend, updateLegend, legendConfig, totalLegendHeight, getLegendHeight }

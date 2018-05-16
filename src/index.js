@@ -9,12 +9,12 @@ import at from 'd3-jetpack/src/at';
 import translateSelection from 'd3-jetpack/src/translate-selection';
 
 import { appendPlayerInfo, makeInfoBox, updateInfoBox } from "./infoBox";
-import { makeLegend, updateLegend } from "./legend";
+import { makeLegend, updateLegend, legendConfig, getLegendHeight } from "./legend";
 
 selection.prototype.at = at;
 selection.prototype.translate = translateSelection;
 
-let config = { width: 700, height: 450, mobileWidth: 300, mobileHeight: 450 };
+let config = { width: 700, height: 450, mobileWidth: 300, mobileHeight: 550 };
 let isMobile, width, height;
 let layout, container;
 let processedData;
@@ -30,16 +30,22 @@ new pym.Child();
 export var data = {};
 
 export var state = {
-  colors: '#254251, #E0AB26, #F37F2F, #3292A6, #6c3c5e',
+  colors: 'standard',
+  colors_custom: '',
+  text_color: '#ffffff',
 
   fluid_width: true,
 
+  margin_auto: true,
   margin_top: 10,
   margin_left: 10,
   margin_right: 150,
   margin_bottom: 10,
   margin_mobileRight: 10,
   margin_mobileBottom: 100,
+  margin_mobileTop: 60,
+  aspect_ratio: 0.75,
+  aspect_ratioMobile: 1.25,
 
   padding_inner: 2,
   padding_outer: 1,
@@ -51,17 +57,18 @@ export var state = {
 export function update() {
   processData();
   isMobile = window.innerWidth < 600 ? true : false;
-  updateSize();
   updateColors();
+  getLegendHeight();
+  updateSize();
   updateLegend();
   updateInfoBox();
 
   svg.at({
     width: isMobile ? config.mobileWidth : config.width,
-    height: isMobile ? config.mobileHeight : config.height,
+    height: isMobile ? config.mobileWidth * state.aspect_ratioMobile : config.width * state.aspect_ratio,
   })
 
-  container.translate([state.margin_left, state.margin_top])
+  container.translate([state.margin_left, state.margin_top + (isMobile ? state.margin_mobileTop : 0)])
 
   layout = treemap()
     .size([width, height])
@@ -113,8 +120,8 @@ export function update() {
     .append('tspan')
     .at({
       x: 8,
-      y: 8,
-      dy: '.8em',
+      y: 0,
+      dy: '.4em',
       class: 'playerNames',
     })
 
@@ -123,8 +130,8 @@ export function update() {
     .append('tspan')
     .at({
       x: 8,
-      y: 20,
-      dy: '1.2em',
+      y: 12,
+      dy: '.8em',
       class: 'playerNamesFee',
     })
 
@@ -145,6 +152,7 @@ export function update() {
     })
 
   cells_update.select(".playerNames")
+    .style("fill", state.colors == "custom" ? state.text_color : "#ffffff")
     .text(function(d) {
       // Only display text if sibling <rect> element is wide enough
       const parentRect = this.parentNode.previousElementSibling;
@@ -153,6 +161,7 @@ export function update() {
       }
     });
   cells_update.select(".playerNamesFee")
+    .style("fill", state.colors == "custom" ? state.text_color : "#ffffff")
     .text(function(d) {
       // Only display text if sibling <rect> element is wide enough
       const parentRect = this.parentNode.parentNode.firstElementChild;
@@ -161,7 +170,6 @@ export function update() {
         else return state.value_prefix + d.data.value.size + state.value_suffix;
       }
     });
-    console.log(svg.node().getBoundingClientRect().height)
     Flourish.setHeight(svg.node().getBoundingClientRect().height);
 }
 
@@ -204,13 +212,13 @@ const updateSize = () => {
     : config.width - state.margin_left - state.margin_right,
   
   height = isMobile
-    ? config.mobileHeight - state.margin_top - state.margin_mobileBottom
-    : config.height - state.margin_top - state.margin_bottom;
+    ? (config.mobileWidth * state.aspect_ratioMobile) - state.margin_top - (state.margin_auto ? legendConfig.totalHeight : state.margin_mobileBottom) - state.margin_mobileTop
+    : (config.width * state.aspect_ratio) - state.margin_top - state.margin_bottom;
 }
 
 const updateColors = () => {
   keys = [];
-  timesColors = state.colors.split(",");
+  timesColors = state.colors == "standard" ? ['#254251', '#E0AB26', '#F37F2F', '#3292A6', '#6c3c5e'] : state.colors_custom.replace(/ /g, "").split(",");
 
   data.data.map(function(player) {
     let val = player.nest.length > 1 ? player.nest[player.nest.length - 2] : "players";

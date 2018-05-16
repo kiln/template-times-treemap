@@ -15,8 +15,29 @@ settings:
   - Design
   - property: colors
     name: Colors
+    type: string
+    choices:
+      -
+        - Standard Times colors
+        - standard
+      -
+        - Custom colors
+        - custom
+  - property: colors_custom
+    name: Colors list
     description: A comma-separated list of colors
     type: string
+    show_if:
+      colors: custom
+  - property: text_color
+    name: Text color
+    type: color
+    show_if:
+      colors: custom
+  - property: fluid_width
+    name: Use 100% width
+    type: boolean
+    new_section: Page
   - property: value_prefix
     name: Prefix
     type: string
@@ -25,9 +46,6 @@ settings:
     name: Suffix
     type: string
     width: quarter
-  - property: fluid_width
-    name: Use 100% width
-    type: boolean
   - property: margin_top
     name: Top
     type: number
@@ -49,6 +67,11 @@ settings:
     type: number
     min: 0
     width: quarter
+  - property: margin_mobileTop
+    name: Top (mobile)
+    type: number
+    min: 0
+    width: quarter
   - property: margin_mobileRight
     name: Right (mobile)
     type: number
@@ -59,6 +82,19 @@ settings:
     type: number
     min: 0
     width: quarter
+  - property: aspect_ratioMobile
+    new_section: Chart height
+    name: Aspect ratio (mobile)
+    type: number
+    min: 0
+    width: half
+    step: 0.05
+  - property: aspect_ratio
+    name: Aspect ratio
+    type: number
+    min: 0
+    width: half
+    step: 0.05
 data:
   - dataset: data
     key: nest
