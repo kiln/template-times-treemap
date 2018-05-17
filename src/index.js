@@ -43,9 +43,9 @@ export var state = {
   margin_bottom: 10,
   margin_mobileRight: 10,
   margin_mobileBottom: 100,
-  margin_mobileTop: 60,
-  aspect_ratio: 0.75,
-  aspect_ratioMobile: 1.25,
+  margin_mobileTop: 70,
+  aspect_ratio: 0.65,
+  aspect_ratioMobile: 1.15,
 
   padding_inner: 2,
   padding_outer: 1,
@@ -121,7 +121,7 @@ export function update() {
     .at({
       x: 8,
       y: 0,
-      dy: '.4em',
+      dy: '1.2em',
       class: 'playerNames',
     })
 
@@ -131,7 +131,7 @@ export function update() {
     .at({
       x: 8,
       y: 12,
-      dy: '.8em',
+      dy: '1.6em',
       class: 'playerNamesFee',
     })
 
@@ -170,7 +170,9 @@ export function update() {
         else return state.value_prefix + d.data.value.size + state.value_suffix;
       }
     });
-    Flourish.setHeight(svg.node().getBoundingClientRect().height);
+    if (typeof Flourish.setHeight == 'function') { 
+     Flourish.setHeight(svg.node().getBoundingClientRect().height);
+   }
 }
 
 export function draw() {

@@ -61,6 +61,7 @@ const updateLegend = () => {
     .at({
       x: 20,
       y: 25,
+      dy: "1em"
     })
     .st({ color: '#666', fill: '#666' })
 
@@ -97,7 +98,7 @@ const makeLegend = () => {
 
   legendTitle
     .append('text')
-    .at({ x: 0, y: 5 })
+    .at({ x: 0, y: 5, dy: "0.8em" })
     .text('Key');
 
   legendTitle.append('line').at({

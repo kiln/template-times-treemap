@@ -21,11 +21,11 @@ const appendPlayerInfo = data => {
 
   playerInfoTitle
     .select('text')
-    .at({ y: 0 })
+    .at({ y: 0, dy: "1em" })
     .text(data.data.value ? state.value_prefix + data.data.value.size + state.value_suffix : "");
   playerInfo
     .select('text')
-    .at({ y: -25 })
+    .at({ y: -5, dy: "1em" })
     .tspans(() => {
       return wordwrap(data.data.key + " " + (data.data.value ? data.data.value.info.join(" ") : ""), isMobile ? Math.min(60, window.innerWidth / 8) : 15);
     })
@@ -36,7 +36,7 @@ const updateInfoBox = () => {
   var infoBoxY = isMobile ? state.margin_top : legendConfig.totalHeight + legendConfig.y + state.margin_top + titlemargin;
 
 	playerInfoTitle.translate([legendConfig.x + state.margin_left, infoBoxY ]);
-	playerInfo.translate([legendConfig.x + state.margin_left, infoBoxY + (playerInfoEmpty ? 0 : 40)]);
+	playerInfo.translate([legendConfig.x + state.margin_left, infoBoxY + (playerInfoEmpty ? 15 : 40)]);
 }
 
 const makeInfoBox = () => {
