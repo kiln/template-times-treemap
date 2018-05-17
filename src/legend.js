@@ -24,7 +24,7 @@ const updateLegend = () => {
   getLegendHeight();
 
   lineWidth = isMobile ? width - 10 : state.margin_right - 20;
-  lineHeight = legendConfig.totalHeight; 
+  lineHeight = legendConfig.totalHeight - 1; 
 
   legendTitle.attr('transform', (d, i) => {
       const height = 20;

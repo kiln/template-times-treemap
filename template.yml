@@ -1,7 +1,8 @@
 id: times-treemap-template
 name: Times Treemap Template
 author: The Times
-sdk_version: 3
+sdk_version: 2
+autoheight: auto
 build:
   src:
     script: npm run build
@@ -77,11 +78,6 @@ settings:
     type: number
     min: 0
     width: quarter
-  - property: margin_mobileBottom
-    name: Bottom (mobile)
-    type: number
-    min: 0
-    width: quarter
   - property: aspect_ratioMobile
     new_section: Chart height
     name: Aspect ratio (mobile)
@@ -89,12 +85,32 @@ settings:
     min: 0
     width: half
     step: 0.05
+    hide_if: fixed_height
   - property: aspect_ratio
     name: Aspect ratio
     type: number
     min: 0
     width: half
     step: 0.05
+    hide_if: fixed_height
+  - property: heightMobile
+    name: Height (mobile)
+    new_section: Chart height
+    type: number
+    min: 20
+    width: half
+    show_if: fixed_height
+  - property: height
+    name: Height
+    type: number
+    min: 20
+    width: half
+    show_if: fixed_height
+  - property: fixed_height
+    name: Use fixed height
+    type: boolean
+    
+
 data:
   - dataset: data
     key: nest

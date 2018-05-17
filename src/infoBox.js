@@ -12,8 +12,10 @@ selection.prototype.translate = translateSelection;
 let titlemargin = 10;
 let playerInfoEmpty;
 let playerInfoTitle, playerInfo;
+let selectedPlayer;
 
 const appendPlayerInfo = data => {
+  selectedPlayer = data;
   playerInfoEmpty = false;
   updateInfoBox();
   playerInfoTitle.select("text").html('');
@@ -63,4 +65,4 @@ const makeInfoBox = () => {
     .tspans(() => wordwrap('Tap an area for more information', 20));
 }
 
-export { appendPlayerInfo, updateInfoBox, makeInfoBox }
+export { appendPlayerInfo, updateInfoBox, makeInfoBox, selectedPlayer }

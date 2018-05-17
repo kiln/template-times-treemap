@@ -8,7 +8,7 @@ import { transition } from "d3-transition";
 import at from 'd3-jetpack/src/at';
 import translateSelection from 'd3-jetpack/src/translate-selection';
 
-import { appendPlayerInfo, makeInfoBox, updateInfoBox } from "./infoBox";
+import { appendPlayerInfo, makeInfoBox, updateInfoBox, selectedPlayer } from "./infoBox";
 import { makeLegend, updateLegend, legendConfig, getLegendHeight } from "./legend";
 
 selection.prototype.at = at;
@@ -36,7 +36,6 @@ export var state = {
 
   fluid_width: true,
 
-  margin_auto: true,
   margin_top: 10,
   margin_left: 10,
   margin_right: 150,
@@ -46,6 +45,9 @@ export var state = {
   margin_mobileTop: 70,
   aspect_ratio: 0.65,
   aspect_ratioMobile: 1.15,
+  fixed_height: false,
+  height: 450,
+  heightMobile: 550,
 
   padding_inner: 2,
   padding_outer: 1,
@@ -63,12 +65,14 @@ export function update() {
   updateLegend();
   updateInfoBox();
 
+  if (selectedPlayer) appendPlayerInfo(selectedPlayer);
+
   svg.at({
     width: isMobile ? config.mobileWidth : config.width,
-    height: isMobile ? config.mobileWidth * state.aspect_ratioMobile : config.width * state.aspect_ratio,
+    height: isMobile ? (state.fixed_height ? config.mobileHeight : config.mobileWidth * state.aspect_ratioMobile) : (state.fixed_height ? config.height : config.width * state.aspect_ratio),
   })
 
-  container.translate([state.margin_left, state.margin_top + (isMobile ? state.margin_mobileTop : 0)])
+  container.translate([state.margin_left, isMobile ? state.margin_mobileTop : state.margin_top])
 
   layout = treemap()
     .size([width, height])
@@ -208,14 +212,16 @@ const processData = () => {
 const updateSize = () => {
   config.width = state.fluid_width ? window.innerWidth : 700;
   config.mobileWidth = state.fluid_width ? window.innerWidth : 300;
+  config.height = state.height;
+  config.mobileHeight = state.heightMobile;
 
   width = isMobile
     ? config.mobileWidth - state.margin_left - state.margin_mobileRight
     : config.width - state.margin_left - state.margin_right,
   
   height = isMobile
-    ? (config.mobileWidth * state.aspect_ratioMobile) - state.margin_top - (state.margin_auto ? legendConfig.totalHeight : state.margin_mobileBottom) - state.margin_mobileTop
-    : (config.width * state.aspect_ratio) - state.margin_top - state.margin_bottom;
+    ? (state.fixed_height ? config.mobileHeight : config.mobileWidth * state.aspect_ratioMobile) - legendConfig.totalHeight - state.margin_mobileTop
+    : (state.fixed_height ? config.height : config.width * state.aspect_ratio) - state.margin_top - state.margin_bottom;
 }
 
 const updateColors = () => {
